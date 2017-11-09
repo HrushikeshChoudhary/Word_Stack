@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private Random random = new Random();
     private StackedLayout stackedLayout;
     private String word1, word2;
+    private String playersWord1 = "";
+    private String playersWord2 = "";
     private Stack<LetterTile> placedTiles = new Stack<>();
 
     Button undoButton;
@@ -87,7 +89,11 @@ public class MainActivity extends AppCompatActivity {
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN && !stackedLayout.empty()) {
                 LetterTile tile = (LetterTile) stackedLayout.peek();
-                tile.moveToViewGroup((ViewGroup) v);
+                if(v.getId() == R.id.word1)
+                    playersWord1 += tile.moveToViewGroup((ViewGroup) v);
+                else
+                    playersWord2 += tile.moveToViewGroup((ViewGroup) v);
+
                 if (stackedLayout.empty()) {
                     TextView messageBox = (TextView) findViewById(R.id.message_box);
                     messageBox.setText(word1 + " " + word2);
@@ -127,13 +133,19 @@ public class MainActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DROP:
                     // Dropped, reassign Tile to the target Layout
                     LetterTile tile = (LetterTile) event.getLocalState();
-                    tile.moveToViewGroup((ViewGroup) v);
+
+                    if (v.getId() == R.id.word1)
+                        playersWord1 += tile.moveToViewGroup((ViewGroup) v);
+                    else
+                        playersWord2 += tile.moveToViewGroup((ViewGroup) v);
+
+                    //tile.moveToViewGroup((ViewGroup) v);
                     if (stackedLayout.empty()) {
-                        TextView messageBox = (TextView) findViewById(R.id.message_box);
-                        messageBox.setText(word1 + " " + word2);
+                        //TextView messageBox = (TextView) findViewById(R.id.message_box);
+                        //messageBox.setText(word1 + " " + word2);
                         undoButton.setEnabled(false);
 
-
+                        checkStatus();
 
                     }
 
@@ -143,9 +155,14 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         }
+
+
     }
 
     public boolean onStartGame(View view) {
+
+        playersWord1 = "";
+        playersWord2 = "";
 
         undoButton.setEnabled(true);
 
@@ -167,8 +184,12 @@ public class MainActivity extends AppCompatActivity {
         }
         while (index2 == index1);
 
-        word1 = words.get(index1);
-        word2 = words.get(index2);
+//        word1 = words.get(index1);
+//        word2 = words.get(index2);
+
+        word1 = "dates";
+        word2 = "loved";
+
         Log.d("Lengths:", word1 +"\t"+word2+":"+word2.length());
         String scrambledWord = "";
         index1 = 0;
@@ -206,9 +227,33 @@ public class MainActivity extends AppCompatActivity {
 
         if(!placedTiles.empty()) {
 
-            placedTiles.pop().moveToViewGroup(stackedLayout);
+            //placedTiles.pop().moveToViewGroup(stackedLayout);
+
+            if (((View)placedTiles.peek().getParent()).getId() == R.id.word1){
+                playersWord1 = new StringBuilder(playersWord1).deleteCharAt(playersWord1.length()-1).toString();
+                placedTiles.pop().moveToViewGroup(stackedLayout);
+            }
+            else {
+                playersWord2 = new StringBuilder(playersWord2).deleteCharAt(playersWord2.length()-1).toString();
+                placedTiles.pop().moveToViewGroup(stackedLayout);
+            }
 
         }
         return true;
     }
+
+    public void checkStatus() {
+        TextView messageBox = (TextView) findViewById(R.id.message_box);
+        if((word1.equals(playersWord1) && word2.equals(playersWord2)) || (word1.equals(playersWord2) && word2.equals(playersWord1)) )
+            messageBox.setText("You win! " + word1 + " " + word2);
+        else if(words.contains(playersWord1) && words.contains(playersWord2)){
+            messageBox.setText("You found alternative words! " + playersWord1 + " " + playersWord2);
+        }
+        else{
+            messageBox.setText("Try again");
+        }
+    }
+
 }
+
+

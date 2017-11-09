@@ -22,7 +22,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class LetterTile extends TextView {
@@ -42,7 +41,7 @@ public class LetterTile extends TextView {
         setBackgroundColor(Color.rgb(255, 255, 200));
     }
 
-    public void moveToViewGroup(ViewGroup targetView) {
+    public char moveToViewGroup(ViewGroup targetView) {
         ViewParent parent = getParent();
         if (parent instanceof StackedLayout ) {
             StackedLayout owner = (StackedLayout) parent;
@@ -56,6 +55,7 @@ public class LetterTile extends TextView {
             ((StackedLayout) targetView).push(this);
             unfreeze();
         }
+        return letter;
     }
 
     public void freeze() {
