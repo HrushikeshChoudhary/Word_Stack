@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         index2 = 0;
 
         while (index1 < word1.length() && index2 < word2.length()) {
-            if (random.nextBoolean()) {
+            if (random.nextBoolean() && index1 - index2 <= 2) {
                 scrambledWord += word1.charAt(index1);
                 index1++;
             } else {
