@@ -184,11 +184,8 @@ public class MainActivity extends AppCompatActivity {
         }
         while (index2 == index1);
 
-//        word1 = words.get(index1);
-//        word2 = words.get(index2);
-
-        word1 = "dates";
-        word2 = "loved";
+       word1 = words.get(index1);
+       word2 = words.get(index2);
 
         Log.d("Lengths:", word1 +"\t"+word2+":"+word2.length());
         String scrambledWord = "";
