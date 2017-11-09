@@ -56,20 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AssetManager assetManager = getAssets();
-        try {
-            InputStream inputStream = assetManager.open("words.txt");
-            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-            String line = null;
-            while((line = in.readLine()) != null) {
-                String word = line.trim();
-                if(word.length() == WORD_LENGTH)
-                    words.add(word);
-            }
-        } catch (IOException e) {
-            Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
-            toast.show();
-        }
+        
         LinearLayout verticalLayout = (LinearLayout) findViewById(R.id.vertical_layout);
         undoButton = (Button) findViewById(R.id.undoButton);
         stackedLayout = new StackedLayout(this);
@@ -160,6 +147,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onStartGame(View view) {
+        
+        AssetManager assetManager = getAssets();
+        try {
+            words.removeAll(words);
+            InputStream inputStream = assetManager.open("words.txt");
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line = null;
+            while((line = in.readLine()) != null) {
+                String word = line.trim();
+                if(word.length() == WORD_LENGTH)
+                    words.add(word);
+            }
+        } catch (IOException e) {
+            Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+        if(WORD_LENGTH<12)
+            WORD_LENGTH++;
+        else
+            WORD_LENGTH = 3;
+        
 
         playersWord1 = "";
         playersWord2 = "";
